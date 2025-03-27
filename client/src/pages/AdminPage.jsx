@@ -2,26 +2,36 @@ import { Target, Users, PlusCircle, ShoppingBasket, ArrowLeftRight} from "lucide
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
  
+import CreatePolicyForm from "../components/CreatePolicyForm";
+import PoliciesList from "../components/PoliciesList";
+import ClaimsList from "../components/ClaimsList";
+import AllUsersList from "../components/AllUsersList";
+import AllTransactions from "../components/AllTransactions"; 
+
 // import CreateProductForm from "../components/CreateProductForm";
 // import ProductsList from "../components/ProductsList";
 
-// import { useProductStore } from "../stores/useProductStore";
-
+import { usePolicyStore } from "../stores/usePolicyStore"; 
 
 const tabs = [
-  { id: "create", label: "Create Policy", icon: PlusCircle },
-  { id: "policies", label: "All Active Policies", icon: ShoppingBasket }, 
-  { id: "claim", label: "All Claims", icon: Target },
-  { id: "users", label: "Current Users", icon: Users },
-  { id: "transactions", label: "All Transactions", icon: ArrowLeftRight },
+  { id: "create", label: "Create", icon: PlusCircle },
+  { id: "policies", label: "Active Policies", icon: ShoppingBasket }, 
+  { id: "claim", label: "Claims", icon: Target },
+  { id: "users", label: "Users", icon: Users },
+  { id: "transactions", label: "Transactions History", icon: ArrowLeftRight }, 
 ];
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("create"); 
+  const { fetchAllPolicies , fetchAllUsers} = usePolicyStore(); 
 
-  // useEffect(() => {
-  //   fetchAllProducts();
-  // }, [fetchAllProducts]);
+  useEffect(() => {
+    fetchAllPolicies();
+  }, [fetchAllPolicies]); 
+  
+  useEffect(() => {
+    fetchAllUsers();
+  }, [fetchAllUsers]); 
 
   return (
     <div className="min-h-screen relative overflow-hidden">

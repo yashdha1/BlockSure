@@ -6,6 +6,7 @@ import { useUserStore } from "../stores/useUserStore";
 import { handleMetaMaskLogin } from "../utils/handleMetamskLogin";
 
 const SignUpPage = () => {
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -18,22 +19,25 @@ const SignUpPage = () => {
   const { signup, loading } = useUserStore();
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    signup(formData); // send the data to the Backend...
+    event.preventDefault() ;
+    console.log(formData) ;
+    signup(formData) ;  // send the data to the Backend...
   };
+
   const handleConnectWallet = async () => {
-    const result = await handleMetaMaskLogin();
+    const result = await handleMetaMaskLogin() ;
+    // loading = true ; 
     if (result) {
       setFormData((prev) => ({
         ...prev,
-        metamaskConnect: result.userAddress, // Store wallet address
+        metamaskConnect: result.userAddress, // Store wallet address // for some use idk sbout this one yet...
       }));
     }
   };
 
   return (
     <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      {/* heading */}
+
       <motion.div
         className="sm:mx-auto sm:w-full sm:max-w-md"
         initial={{ opacity: 0, y: -20 }}
@@ -44,7 +48,6 @@ const SignUpPage = () => {
           Create your account
         </h2>
       </motion.div>
-
       <motion.div
         className="mt-8 sm:mx-auto sm:w-full sm:max-w-md"
         initial={{ opacity: 0, y: 20 }}
@@ -162,7 +165,7 @@ const SignUpPage = () => {
               </div>
             </div>
 
-            {/* DOCUMENTS CHECKBOXEX */}
+            {/* DOCUMENTS CHECKBOXEX : CSS this long is crazy work:-> */}
             <div className="mb-4">
               <label
                 htmlFor="documents"
@@ -204,21 +207,20 @@ const SignUpPage = () => {
               </label>
             </div>
 
+            {/* CONNECT WALLET BUTTON */} 
             <div className="mb-4">
               <button
                 onClick={handleConnectWallet}
                 className="w-full flex items-center justify-center px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-200"
               >
                 {formData.metamaskConnect
-                  ? `Connected: ${formData.metamaskConnect.substring(
-                      0,
-                      6
-                    )}...${formData.metamaskConnect.slice(-4)}`
-                  : "Connect MetaMask"}
+                  ? `Connected: ${formData.metamaskConnect.substring(0,6)}
+                  ...${formData.metamaskConnect.slice(-4)}`
+                  : "Connect To MetaMask"}
               </button>
             </div>
 
-            {/* SUBMISSION BUTTON FOR THE SIGNIN OPTIONS  */}
+            {/* SUBMISSION BUTTON FOR THE SIGNIN OPTIONS - otp verification... */}
             <button
               type="submit"
               className="w-full flex justify-center py-2 px-4 border border-transparent 
@@ -238,10 +240,11 @@ const SignUpPage = () => {
               ) : (
                 <>
                   <UserPlus className="mr-2 h-5 w-5" aria-hidden="true" />
-                  Otp Verification...
+                  SignUp
                 </>
               )}
             </button>
+            
           </form>
 
           <p className="mt-8 text-center text-sm text-gray-400">

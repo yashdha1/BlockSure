@@ -1,16 +1,15 @@
 import React from "react";
 import { useEffect } from "react";
 import CategoryItem from "../components/CategoryItem";
-// import { useProductStore } from "../stores/useProductStore";
-// import FeaturedProducts from "../components/FeaturedProducts";
+
 
 const categories = [
-  { href: "/health", name: "Health Insurance", imageUrl: "/health.png" },
-  { href: "/accidental", name: "Accidental Insurance", imageUrl: "/accident.png" },
-  { href: "/life", name: "Life Insurance", imageUrl: "/life.png" },
-  { href: "/cancer", name: "Cancer Insurance", imageUrl: "/cancer.png" },
-  { href: "/vehical", name: "Vehical Insurance", imageUrl: "/vehical.png" },
-  { href: "/mahila", name: "Mahila Insurance", imageUrl: "/mahila.png" }, 
+  { href: "/Health", name: "Health Insurance", imageUrl: "/health.png" },
+  { href: "/Accident", name: "Accidental Insurance", imageUrl: "/accident.png" },
+  { href: "/Life", name: "Life Insurance", imageUrl: "/life.png" },
+  { href: "/Cancer", name: "Cancer Insurance", imageUrl: "/cancer.png" },
+  { href: "/Vehicle", name: "Vehical Insurance", imageUrl: "/vehical.png" },
+  { href: "/Mahila", name: "Mahila Insurance", imageUrl: "/mahila.png" }, 
 ];
 
 const HomePage = () => {
@@ -29,10 +28,6 @@ const HomePage = () => {
             <CategoryItem category={category} key={category.name} />
           ))}
         </div>
-
-        {/* {!isLoading && products.length > 0 && (
-          <FeaturedProducts featuredProducts={products} />
-        )} */}
       </div>
     </div>
   );

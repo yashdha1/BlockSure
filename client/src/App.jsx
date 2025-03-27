@@ -4,11 +4,16 @@ import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/Navbar";
 import LoadingSpinner from "./components/LoadingSpinner";
-import HomePage from "./pages/HomePage" ;
-import LoginPage from "./pages/LoginPage" ;
-import SignUpPage from "./pages/SignUpPage" ;
-import AdminPage from "./pages/AdminPage" ;
-import { useUserStore } from "./stores/useUserStore" ; 
+
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignupPage";
+import AdminPage from "./pages/AdminPage";
+import VerifyOtp from "./pages/VerifyOtp";
+import GetProfile from "./pages/GetProfile"; 
+import CategoryPolicyPage from "./pages/CategoryPolicyPage";
+
+import { useUserStore } from "./stores/useUserStore";
 
 function App() { 
   
@@ -33,7 +38,15 @@ function App() {
           path="/login"
           element={!user ? <LoginPage /> : <Navigate to="/" />}
         />
-
+        <Route
+          path="/verify-otp"
+          element={!user ? <VerifyOtp /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/getProfile"
+          element={user ? <GetProfile /> : <Navigate to="/login" />}
+        /> 
+        <Route path="/category/:category" element={<CategoryPolicyPage />} />
         <Route  
           path="/admin-dashboard"
           element={

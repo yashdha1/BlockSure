@@ -13,8 +13,8 @@ export const handleMetaMaskLogin = async () => {
     console.log(provider)
     await window.ethereum.request({ method: "eth_requestAccounts" });
     console.log("B")
-    const signer = provider.getSigner();
-    const userAddress = await signer.getAddress(); // Get user's address
+    const signer = await provider.getSigner(); // Fix: Await the getSigner() call
+    const userAddress = await signer.getAddress(); // Now this works
     console.log("C")
     // Generate a unique message
     const message = `Sign this message to verify your wallet: ${Date.now()}`;
