@@ -1,27 +1,41 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ShoppingBasket } from "lucide-react"; // you can change to any relevant icon
+import { ShoppingBasket } from "lucide-react"; // you can change to any relevant icon... 
+import { useEffect } from "react";
+import { useUserStore } from "../stores/useUserStore";
 
-const GetProfile = ({ user }) => {
-  // dummy data if no user prop is passed
+
+const GetProfile = () => {
+  const { user, userProfile } = useUserStore();
+  console.log("User console: ", user) ; 
+  const email = user?.email ;  
+  if(email === undefined) return null ;
+  
+  useEffect(() => {
+    userProfile();
+  }, [userProfile, email]) ;
+
+  // dummy data if NO USER is passed
   const dummyUser = {
-    _id: "67e56dce3ecb451a403ea1df",
-    username: "yash",
-    email: "yashdhadod@gmail.com",
-    metamaskConnect: "0x2778F79eF8B8182ED85891cf46227479aDDA13D1",
+    _id: "DUMMY",
+    username: "DUMMY",
+    email: "DUMMY",
+    metamaskConnect: "DUMMY",
     documents: true,
     otp: "2387",
     isVerified: true,
     role: "admin",
     policies: [
       // Dummy policy data for display purposes
-      { policyId: "policy1", name: "Life Cover", units: 2 },
-      { policyId: "policy2", name: "Health Cover", units: 1 },
+      { policyId: "policy1",  units: 2 },
+      { policyId: "policy2",  units: 1 },
     ],
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
-
+  const handleClaim = () => {
+    console.log("Claim clicked");
+  }; // handleClaim
   const profile = user || dummyUser;
 
   return (
@@ -76,10 +90,13 @@ const GetProfile = ({ user }) => {
               <thead className="bg-gray-700">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Policy Name
+                    Policy ID
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Units
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                    Claim Benifit
                   </th>
                   <th className="px-6 py-3"></th>
                 </tr>
@@ -88,14 +105,17 @@ const GetProfile = ({ user }) => {
                 {profile.policies.map((p) => (
                   <tr key={p.policyId} className="hover:bg-gray-700">
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {p.name}
+                      {p._id}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {p.units}
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      {p.units * p.returnRatio} * Initial Investment
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
-                        onClick={() => alert(`Claiming policy ${p.policyId}`)}
+                        onClick={() => {handleClaim()}}
                         className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded transition duration-300"
                       >
                         CLAIM

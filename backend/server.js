@@ -1,11 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import path from "path";
+import cookieParser from "cookie-parser"; 
 import authRoutes from "./routes/auth.route.js";
 import policyRoutes from "./routes/policy.route.js";
 import claimRoutes from "./routes/claim.route.js" ;
-
 
 import { connectDB } from "./lib/db.js";
 
@@ -22,6 +20,7 @@ app.use("/api/v1/auth", authRoutes); // authentication routes:
 app.use("/api/v1/policy", policyRoutes);  // policies ... complete the policies routes.... 
 app.use("/api/v1/claim", claimRoutes); // after the policies are bought: 
 // endpoints...
+
 connectDB();
 app.listen(PORT, () => {
   console.log("Server has started successfully!!! at http://localhost:" + PORT);

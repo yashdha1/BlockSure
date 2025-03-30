@@ -12,6 +12,7 @@ import AdminPage from "./pages/AdminPage";
 import VerifyOtp from "./pages/VerifyOtp";
 import GetProfile from "./pages/GetProfile"; 
 import CategoryPolicyPage from "./pages/CategoryPolicyPage";
+import PurchaseSuccessPage from "./pages/PurchaseSuccessPage";
 
 import { useUserStore } from "./stores/useUserStore";
 
@@ -57,6 +58,11 @@ function App() {
             )
           }
         />
+        <Route 
+             path = "/purchase_success"
+             element={user  ? <PurchaseSuccessPage /> : <Navigate to="/login" />}
+        />
+        
       </Routes>
     </div>
     <Toaster />

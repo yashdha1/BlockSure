@@ -5,7 +5,8 @@ import {
     createPolicy,
     deletePolicy,
     getAllUserPolicy,
-    buyPolicyUser
+    buyPolicyUser,
+    savePolicyBoughtUser
 } from "../controllers/policy.controller.js";
 import { getAllUsers } from "../controllers/auth.controller.js"; 
 
@@ -22,11 +23,16 @@ router.delete("/:id", protectedRoute, adminRoute, deletePolicy);
 router.get("/users", protectedRoute, adminRoute, getAllUsers);
 
 // get all the policies by the category :  
-router.get("/category/:category", getPolicyByCategory ); // get all the policies by category...
+router.get("/category/:category", getPolicyByCategory); // get all the policies by category...
+
 // in category section the policies will be listed if buyed is clicked 
 router.post("/profile", protectedRoute, buyPolicyUser);
 
 // user only routes :- for PROFILE DASHBOARD 
 router.get("/profile",protectedRoute , getAllUserPolicy);
+
+// savee the policies bought by the user...
+// /api/v1/policy/save_policy...
+router.post("/save_policy", protectedRoute, savePolicyBoughtUser);
 
 export default router;

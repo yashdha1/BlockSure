@@ -190,8 +190,8 @@ export const refreshTokens = async (req, res) => {
   }
 };
 export const getProfile = async (req, res) => {
-  try {
-    const { email } = req.body ; // only the particular user can accesss this shit... 
+  try { 
+    const { email } = req.query; // only the particular user can accesss this shit... 
     if (!email)
       return res.status(400).send("Email not provided!");
     const user = await User.findOne({ email }); // find user in the DATABASE :

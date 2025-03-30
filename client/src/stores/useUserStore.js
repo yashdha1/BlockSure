@@ -109,26 +109,48 @@ export const useUserStore = create((set, get) => ({
             toast.error(error.response.data.error || "Error Occured Durinng LOGOUT.")
         }
     },
-    userProfile : async({ email })=>{
-        set({loading: true}); // start thy loading....
-        if(!email){
-            set({loading: false}); 
-            return res.status(400).send("Email is required.");
+    // userProfile : async({ email })=>{
+    //     set({loading: true}); // start thy loading....
+    //     if(!email){
+    //         set({loading: false}); 
+    //         return res.status(400).send("Email is required.");
+    //     }
+    //     try {
+    //         const responce = await axios.get("/auth/profile", { email });
+    //         if(!responce){
+    //             set({loading: false});
+    //             return toast.error("No response data received") ;
+    //         }
+    //         set({ user: responce.data.user, loading: false }) ;
+    //         toast.success("User Profile fetched successfully");
+    //     } catch (error) {
+    //         console.error("Error in fetching User Profile", error);
+    //         set({loading: false});
+    //         toast.error(error.response?.data?.error || error.message || "Error in fetching User Profile");   
+    //     }
+    // },
+    userProfile : async ({ email }) => {
+        set({ loading: true }); 
+        if (!email) {
+            set({ loading: false }); 
+            toast.error("Email is required.");
+            return;
         }
         try {
-            const responce = await axios.get("/auth/profile", { email });
-            if(!responce){
-                set({loading: false});
-                return toast.error("No response data received") ;
+            const response = await axios.get(`/auth/profile?email=${email}`);
+            if (!response.data) {
+                set({ loading: false });
+                return toast.error("-- NO DATA ON USER --");
             }
-            set({ user: responce.data.user, loading: false }) ;
+            set({ user: response.data.user, loading: false });
             toast.success("User Profile fetched successfully");
         } catch (error) {
-            console.error("Error in fetching User Profile", error);
-            set({loading: false});
-            toast.error(error.response?.data?.error || error.message || "Error in fetching User Profile");   
+            console.error("Error fetching User Profile:", error);
+            set({ loading: false });
+            toast.error(error.response?.data?.error || error.message || "Error fetching profile");
         }
     },
+    
 }));
 
 

@@ -3,7 +3,6 @@ import { create } from "zustand";
 import axios from "../lib/axios.js";
 import { toast } from "react-hot-toast";
 
-
 export const usePolicyStore = create((set) => ({
   policies: [],
   users: [],
@@ -80,14 +79,21 @@ export const usePolicyStore = create((set) => ({
       toast.error(error.response.data.error || "Failed to fetch users");
     }
   },
-  buyPolicyStore: async (policyId, units, user) => {
+  BuyPolicyStore: async (policyId, units, user) => {
     set({ loading: true });
     try {
+      console.log("Buy Store Called ... ")
+      console.log(axios); 
       const response = await axios.post("/policy/profile", {
         policyId,
         units,
         user,
-      }); 
-    } catch (error) {}
+      });
+      console.log("Buy Store Called RESPONCE:-->")
+      console.log(response)
+    } catch (error) {
+      set({ loading: false });
+      toast.error(error.response.data.error || "Failed to buy policy");
+    }
   },
 }));

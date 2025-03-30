@@ -7,5 +7,7 @@ const axiosInstance = axios.create({
     withCredentials : true, // cookies will be send for everything 
 });
 
+console.log("mode", import.meta.mode); 
+console.log("baseURL", axiosInstance.defaults.baseURL); 
 
 export default axiosInstance ; 

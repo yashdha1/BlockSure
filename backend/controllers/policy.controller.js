@@ -89,7 +89,6 @@ export const deletePolicy = async (req, res) => {
     });
   }
 };
-
 // general everyone : should be able to get this :-
 export const getPolicyByCategory = async (req, res) => {
   try {
@@ -116,7 +115,6 @@ export const getPolicyByCategory = async (req, res) => {
     });
   }
 };
-
 // for users :
 export const getAllUserPolicy = async (req, res) => {
   try {
@@ -146,7 +144,6 @@ export const getAllUserPolicy = async (req, res) => {
     });
   }
 };
-
 // Buying policy controller to transfer funds: 
 export const buyPolicyUser = async (req, res) => {
   try {
@@ -191,7 +188,7 @@ export const buyPolicyUser = async (req, res) => {
     const userAddress = await signer.getAddress(); // Get user's wallet address
 
     console.log(`Buying Policy: ${policyId}, Cost: ${totalCost} ETH`);
-
+    
     // Send ETH from user to admin
     const tx = await signer.sendTransaction({
       to: process.env.ADMIN_WALLET_ADDRESS, // Replace with your admin ETH wallet
@@ -215,5 +212,34 @@ export const buyPolicyUser = async (req, res) => {
       message: "Internal Server Error",
       error: error.message,
     });
+  }
+};
+export const savePolicyBoughtUser = async (req, res) => {
+  try {
+    const { policyId, units, userId, PName, returnRatio } = req.body ;
+    if (!policyId || !userId || !units || !returnRatio || !PName) {
+      return res.status(400).json({ success: false, message: "Missing required fields." });
+    }  
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+    const existingPolicy = user.policies.find((p) => p.policyId.toString() === policyId);
+    if (existingPolicy) { 
+      existingPolicy.units += units;
+    } else {
+      console.log("Pushing policy:", {
+        policyId,
+        PName,
+        units,
+        returnRatio
+      });
+      user.policies.push({ policyId, PName, units, returnRatio});
+    }
+    await user.save();
+    return res.status(200).json({ success: true, message: "Policy saved successfully", userPolicies: user.policies });
+  } catch (error) {
+    console.error("Error saving policy:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
   }
 };

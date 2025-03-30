@@ -1,30 +1,43 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus , Loader} from "lucide-react";
 import { usePolicyStore } from "../stores/usePolicyStore";
 import { useUserStore } from "../stores/useUserStore";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link,   useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { buyPolicy } from "../utils/handleBuyPolicy.js";
+import { toast } from "react-hot-toast";
+
 
 const CategoryPolicyPage = () => {
-  const { fetchPolicyByCategory, policies, loading, BuyPolicyStore } =
+  const { fetchPolicyByCategory, policies, loading} =
     usePolicyStore();  
   const { user } = useUserStore();
   const { category } = useParams();
   const [units, setUnits] = useState(1);
   const [loadingBuy, setLoadingBuy] = useState(false); // New loading state
   console.log(units);
+  const navigate = useNavigate(); // Define navigate inside the functional component
+  const role = user?.role;
 
   useEffect(() => {
     fetchPolicyByCategory(category);
   }, [fetchPolicyByCategory]);
 
-  const handleBuy = async (policyId) => {
-    try {
-      setLoadingBuy(true); // Set loading state when Buy button is clicked
-      const result = await BuyPolicyStore(policyId, units, user); // Simulate MetaMask transaction
-	  if(result) 
-		Navigate("/success-page"); // Redirect to success page
+  const handleBuy = async (investment, policyID, PName, returnRatio) => {
+    try { 
+      const userWA = user.metamaskConnect; 
+      const userId = user._id; // to save the policy status in the backend : 
+      setLoadingBuy(true);
+      const result = await buyPolicy(investment, units, userWA, userId, policyID, PName, returnRatio); // Simulate MetaMask transaction
+	    console.log("Transaction success :", result) ;
+      if(result.success){
+        toast.success(result.message);
+		    navigate("/purchase_success");
+      } else{
+        toast.error(result.message);
+      }
     } catch (error) {
       console.error("Transaction failed:", error);
     } finally {
@@ -35,8 +48,8 @@ const CategoryPolicyPage = () => {
   return (
     <div className="min-h-screen">
       {loadingBuy && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16 animate-spin"></div>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"> 
+          <Loader className="animate-spin text-emerald-400" size={50} />
         </div>
       )}
 
@@ -138,7 +151,7 @@ const CategoryPolicyPage = () => {
                           {p.category}
                         </div>
                       </td>
-                      {user && (
+                      {role === "user" && (
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <Minus
                             size={18}
@@ -155,7 +168,7 @@ const CategoryPolicyPage = () => {
                           />
                         </td>
                       )}
-                      {user && (
+                      {role === "user" && (
                         <>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             {/* Display the current units */}
@@ -163,7 +176,7 @@ const CategoryPolicyPage = () => {
                             <button
                               onClick={() => {
                                 // Increase units when clicked
-                                handleBuy(p._id);
+                                handleBuy(p.investment, p._id, p.name, p.returnRatio);
                               }}
                               className="bg-emerald-600 hover:bg-emerald-700 text-white text-l py-3 px-5 
                                         rounded-md flex items-center transition duration-300 ease-in-out"

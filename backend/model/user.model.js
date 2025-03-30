@@ -39,7 +39,15 @@ const userSchema = new mongoose.Schema(
           ref: "Policy",
           required: true,
         },
+        PName: {
+          type: String,
+          required: true
+        },
         units: {
+          type: Number,
+          required: true
+        }, 
+        returnRatio: {
           type: Number,
           required: true
         }
