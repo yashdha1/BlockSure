@@ -1,9 +1,7 @@
 import { ethers } from "ethers";
 import axios from "../lib/axios.js";
-// import dotenv from "dotenv"; 
-// dotenv.config();
 
-const ADMIN_WALLET_ADDRESS = "0x2778F79eF8B8182ED85891cf46227479aDDA13D1"; 
+const ADMIN_WALLET_ADDRESS = "0x2778F79eF8B8182ED85891cf46227479aDDA13D1" ;
 
 export const buyPolicy = async ( investment, units, userAddress , userId , policyId, PName, returnRatio) => {
   if (!window.ethereum) {
@@ -45,9 +43,9 @@ export const buyPolicy = async ( investment, units, userAddress , userId , polic
     });
 
     if(response.status !== 200) {
-      return { success: false, message: "An unexpected error occurred. in saving the policy." };
+      return { success: false, message: "An unexpected error occurred. in saving the policy."};
     } 
-    // Finally send the transaction.... 
+    // Finally send the transaction....
     const tx = await signer.sendTransaction({
       to: ADMIN_WALLET_ADDRESS, // Define in .env
       value: tc,

@@ -14,7 +14,7 @@ const PurchaseSuccessPage = () => {
 			<Confetti
 				width={window.innerWidth}
 				height={window.innerHeight}
-				gravity={0.1}
+				gravity={0.6}
 				style={{ zIndex: 99 }}
 				numberOfPieces={700}
 				recycle={false}
@@ -32,12 +32,12 @@ const PurchaseSuccessPage = () => {
 						Thank you for your Trust. You can check {"Profile"} to see the status. 
 					</p>
 					<p className='text-emerald-400 text-center text-sm mb-6'>
-						Check your email for order details and updates.
+						Check your Profile for Insurance Details.
 					</p>
 					<div className='bg-gray-700 rounded-lg p-4 mb-6'>
 						<div className='flex items-center justify-between mb-2'>
-							<span className='text-sm text-gray-400'>Order number</span>
-							<span className='text-sm font-semibold text-emerald-400'>#12345</span>
+							<span className='text-sm text-gray-400'>Transaction Complete</span>
+							<span className='text-sm font-semibold text-emerald-400'>---Incomplete---</span>
 						</div>
 					</div>
 

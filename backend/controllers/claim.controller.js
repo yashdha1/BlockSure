@@ -3,7 +3,6 @@ import Claim from "../model/claim.model.js";
 import Policy from "../model/policy.model.js";
 
 import nodemailer from "nodemailer";
-
 import { redis } from "../lib/redis.js";
 import { ethers } from "ethers";
 // import { generateOTP } from "../services/otpAuth.service.js";
@@ -16,7 +15,9 @@ dotenv.config();
 // getting the policyID from the user.policies:
 export const createClaim = async (req, res) => {
     try { 
-      const { policyId, userId , document } = req.body;
+      console.log("Request BOdy : ", req.body) ; 
+      const { policyId,  units, totalReturn, userId  } = req.body;
+      const document = true ; 
       // Validate inputs
       if (!policyId || !userId) {
         return res.status(400).json({
@@ -27,7 +28,7 @@ export const createClaim = async (req, res) => {
       if(!document){
         return res.status(400).json({
           success: false,
-          message: "document Verification is Nessacary.",
+          message: "document Verification is required !",
         }); 
       }
       // Find the user
@@ -50,7 +51,7 @@ export const createClaim = async (req, res) => {
       }
   
       // Calculate claim amount
-      const claimAmount = userPolicy.units * policy.investment * policy.returnRatio;
+      const claimAmount = totalReturn ;
   
       // Create claim 
       const newClaim = await Claim.create({
