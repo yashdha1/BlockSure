@@ -5,6 +5,10 @@ export const handleMetaMaskLogin = async () => {
     alert("MetaMask is not installed. Please install it.");
     return;
   }
+  if (!window.ethereum.isConnected()) {
+    console.log("MetaMask not connected, requesting accounts...");
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+  }  
 
   try {
     // Request user's Ethereum account
@@ -13,9 +17,9 @@ export const handleMetaMaskLogin = async () => {
     console.log(provider)
     await window.ethereum.request({ method: "eth_requestAccounts" });
     console.log("B")
-    const signer = await provider.getSigner(); // Fix: Await the getSigner() call
+    const signer = await provider.getSigner(); 
     const userAddress = await signer.getAddress(); // Now this works
-    console.log("C")
+    console.log("Cat")
     // Generate a unique message
     const message = `Sign this message to verify your wallet: ${Date.now()}`;
     const signature = await signer.signMessage(message); // User signs the message

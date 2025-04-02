@@ -15,7 +15,8 @@ const policySchema = new mongoose.Schema(
     investment : {
       type: Number,
       required: true,
-      min: 0.1
+      min: 0.1,
+      max: 2.1
     },
     category: {
       type: String,

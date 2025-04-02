@@ -47,6 +47,10 @@ const userSchema = new mongoose.Schema(
           type: Number,
           required: true
         }, 
+        investment: {
+          type: Number,
+          required: true
+        }, 
         returnRatio: {
           type: Number,
           required: true

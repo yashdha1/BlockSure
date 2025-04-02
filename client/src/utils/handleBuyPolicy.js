@@ -9,8 +9,7 @@ export const buyPolicy = async ( investment, units, userAddress , userId , polic
     return;
   }
   try { 
-    
-    const totalCost = investment * units;
+    const totalCost = investment * units ;
     // Validate input
     if (!policyId || !units || !userId ) {
       return res.status(400).json({
@@ -34,7 +33,9 @@ export const buyPolicy = async ( investment, units, userAddress , userId , polic
     }
     const tc = ethers.parseEther(totalCost.toString());
     // Call backend API to save the policy  
+    console.log("Saving the policy...", investment, policyId, units, userId, PName, returnRatio); // check if everything is present 
     const response = await axios.post("/policy/save_policy", {
+      investment,
       policyId,
       units,
       userId,

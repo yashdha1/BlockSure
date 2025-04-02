@@ -1,23 +1,22 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ShoppingBasket } from "lucide-react"; // you can change to any relevant icon... 
+import { ShoppingBasket } from "lucide-react"; // you can change to any relevant icon...
 import { useEffect, useState } from "react";
 import { useUserStore } from "../stores/useUserStore";
-import { usePolicyStore } from "../stores/usePolicyStore"; 
-import { toast } from "react-hot-toast" ; 
-import { claimPolicy } from "../utils/handleClaimPolicy.js" ;  
+import { usePolicyStore } from "../stores/usePolicyStore";
+import { toast } from "react-hot-toast";
+import { claimPolicy } from "../utils/handleClaimPolicy.js";
 
 const GetProfile = () => {
   const { user, userProfile } = useUserStore();
-  const {  policies, loading} = usePolicyStore();
-  const [ claimBtnText, SetClaimBtnText ] = useState("Claim") ; 
-  const [loadingClaim, setLoadingClaim] = useState(false);
-  const email = user?.email ;  
-  if(email === undefined) return null ;
-  
+  const { policies, loading } = usePolicyStore();
+  const [claimStatus, setClaimStatus] = useState(false);
+  const email = user?.email;
+  if (email === undefined) return null;
+
   useEffect(() => {
     userProfile();
-  }, [userProfile, email]) ;
+  }, [userProfile, email]);
   const dummyUser = {
     _id: "DUMMY",
     username: "DUMMY",
@@ -29,32 +28,48 @@ const GetProfile = () => {
     role: "admin",
     policies: [
       // Dummy policy data for display purposes
-      { policyId: "policy1",  units: 2 },
-      { policyId: "policy2",  units: 1 },
+      { policyId: "policy1", units: 2 },
+      { policyId: "policy2", units: 1 },
     ],
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
+  const handleClaim = (
+    policyId,
+    units,
+    returnRatio,
+    userAddress,
+    investment
+  ) => {
+    console.log(
+      "Claim clicked",
+      policyId,
+      units,
+      returnRatio,
+      userAddress,
+      investment
+    );
 
-  console.log("policies :", policies); 
-  const handleClaim = (policyId, units, returnRatio, userAddress) => {
-    console.log("Claim clicked", policyId, units, returnRatio, userAddress);
-
-    const policy = policies.find(p => p.policyId === policyId); 
-    const investment = policy?.investment || 0; 
+    const policy = policies.find((p) => p.policyId === policyId);
     const totalReturn = investment * returnRatio * units; // total return to the user:-
-    console.log("Claim clicked - totol return : ", policyId, units, totalReturn, userAddress);
-    try {  
-      const result = claimPolicy(policyId, units, totalReturn, userAddress );
-      if(result.success){
-        console.log("Success in claiming the policy!") ; 
+    console.log(
+      "Claim clicked - totol return : ",
+      policyId,
+      units,
+      totalReturn,
+      userAddress
+    );
+    try {
+      const result = claimPolicy(policyId, units, totalReturn, userAddress);
+      if (result) {
+        console.log("Success in claiming the policy!");
         toast.success(result.message);
-        SetClaimBtnText("Claimed Request Sent"); 
+        setClaimStatus(true); // set the claim status to true....
       }
     } catch (error) {
-      console.log("error in claiminh the policy...") 
+      console.log("error in claiminh the policy...");
       toast.error(error.response.data.error || "Failed to claim policy");
-    } 
+    }
   };
   const profile = user || dummyUser;
 
@@ -131,14 +146,22 @@ const GetProfile = () => {
                       {p.units}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      { p.units * p.returnRatio} 
+                      {p.units * p.returnRatio * p.investment}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
-                        onClick={() => {handleClaim(p._id, p.units, p.returnRatio, profile.metamaskConnect)}}
+                        onClick={() => {
+                          handleClaim(
+                            p.policyId,
+                            p.units,
+                            p.returnRatio,
+                            profile.metamaskConnect,
+                            p.investment
+                          );
+                        }}
                         className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded transition duration-300"
                       >
-                        {claimBtnText}
+                        Claim
                       </button>
                     </td>
                   </tr>

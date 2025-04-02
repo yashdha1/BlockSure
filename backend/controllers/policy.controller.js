@@ -216,8 +216,8 @@ export const buyPolicyUser = async (req, res) => {
 };
 export const savePolicyBoughtUser = async (req, res) => {
   try {
-    const { policyId, units, userId, PName, returnRatio } = req.body ;
-    if (!policyId || !userId || !units || !returnRatio || !PName) {
+    const { investment ,policyId, units, userId, PName, returnRatio } = req.body ;
+    if ( !investment || !policyId || !userId || !units || !returnRatio || !PName) {
       return res.status(400).json({ success: false, message: "Missing required fields." });
     }  
     const user = await User.findById(userId);
@@ -229,12 +229,13 @@ export const savePolicyBoughtUser = async (req, res) => {
       existingPolicy.units += units;
     } else {
       console.log("Pushing policy:", {
+        investment,
         policyId,
         PName,
         units,
         returnRatio
       });
-      user.policies.push({ policyId, PName, units, returnRatio});
+      user.policies.push({ investment ,policyId , PName , units , returnRatio });
     }
     await user.save();
     return res.status(200).json({ success: true, message: "Policy saved successfully", userPolicies: user.policies });
