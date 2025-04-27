@@ -19,6 +19,8 @@ export const claimPolicy = async (policyId, units, totalReturn, userAddress) => 
     if (connectedAddress.toLowerCase() !== userAddress.toLowerCase()) {
         return { success: false, message: "Connected wallet doesn't match the logged-in user." };
     }
+
+
     // const tx = await signer.sendTransaction({
     //     to: adminAddress,
     //     value: ethers.parseEther(totalReturn.toString()), // Convert to correct format

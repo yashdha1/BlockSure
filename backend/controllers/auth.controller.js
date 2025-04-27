@@ -126,6 +126,7 @@ export const login = async (req, res) => {
     }
   } catch (error) {
     console.log("Error in LOGIN CONTROLLER");
+    console.log("Error in LOGIN CONTROLLER", error);
     return res.status(500).json({ error: error.message });
   }
 };
