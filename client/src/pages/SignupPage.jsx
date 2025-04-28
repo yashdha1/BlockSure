@@ -4,29 +4,64 @@ import { UserPlus, Mail, Lock, User, ArrowRight, Loader } from "lucide-react";
 import { motion } from "framer-motion";
 import { useUserStore } from "../stores/useUserStore";
 import { handleMetaMaskLogin } from "../utils/handleMetamskLogin";
+import { processDocument } from "../lib/tessaract.js";
+import { toast } from "react-hot-toast" ;
 
 const SignUpPage = () => {
-
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     metamaskConnect: "",
-    confirmPassword: "",
-    documents: false,
+    confirmPassword: "" 
   });
 
+  const [aadhar, SetAadhar] = useState(null);
   const { signup, loading } = useUserStore();
 
-  const handleSubmit = (event) => {
-    event.preventDefault() ;
-    console.log(formData) ;
-    signup(formData) ;  // send the data to the Backend...
+  const handleSubmit = async (event) => { 
+    event.preventDefault();
+    if (!aadhar) {
+      toast.error("Please upload your Aadhar card.");
+      console.error("No document uploaded.");
+      return;
+    }
+
+    try {
+
+      console.log("Image processing started...");
+      const { name, aadharNumber, dob } = await processDocument(aadhar);
+      console.log(`Image processing completed: Name : ${name}, Adddhar Number : ${aadharNumber}, DOB: ${dob}`);
+
+      const payload = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        metamaskConnect: formData.metamaskConnect,
+        documents: [
+          {
+            DocName: name,
+            DocDOB: dob,
+            DocAadhar: aadharNumber,
+          },
+        ],
+      };
+      // if (formData.username.toLowerCase() !== name.toLowerCase()) {
+      //   toast.error("UnAutorised User. Or try") ;
+      //   console.error("Name mismatch between form and document.") ;
+      //   return;
+      // }
+      console.log("Payload ready :- ", payload);
+
+      signup(payload); // Send to backend
+    } catch (error) {
+        console.error("Error during signup:", error);
+    }
   };
 
   const handleConnectWallet = async () => {
-    const result = await handleMetaMaskLogin() ;
-    // loading = true ; 
+    const result = await handleMetaMaskLogin();
     if (result) {
       setFormData((prev) => ({
         ...prev,
@@ -37,7 +72,6 @@ const SignUpPage = () => {
 
   return (
     <div className="flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-
       <motion.div
         className="sm:mx-auto sm:w-full sm:max-w-md"
         initial={{ opacity: 0, y: -20 }}
@@ -169,52 +203,42 @@ const SignUpPage = () => {
             <div className="mb-4">
               <label
                 htmlFor="documents"
-                className="flex items-center space-x-3"
+                className="flex items-center space-x-3 cursor-pointer"
               >
-                <div className="relative">
+                <div className="relative w-full">
                   <input
                     id="documents"
-                    type="checkbox"
+                    type="file"
+                    accept="image/*"
                     required
-                    checked={formData.documents}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        documents: e.target.checked,
-                      })
-                    }
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setFormData({
+                          ...formData,
+                          documents: e.target.files[0],
+                        });
+                        SetAadhar(e.target.files[0]); // <- THIS is missing
+                      }
+                    }}
                     className="hidden"
                   />
-                  <div className="w-5 h-5 rounded bg-gray-700 border-2 border-gray-500 flex items-center justify-center transition-colors">
-                    {formData.documents && (
-                      <svg
-                        className="w-3 h-3 text-emerald-400"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    )}
+                  <div className="w-full flex items-center justify-center px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-200">
+                    {formData.documents
+                      ? `Uploaded: ${formData.documents.name}`
+                      : "Upload Aadhar Card"}
                   </div>
                 </div>
-                <span className="text-sm font-medium text-gray-300">
-                  (temporary) Document Verification Status
-                </span>
               </label>
             </div>
 
-            {/* CONNECT WALLET BUTTON */} 
+            {/* CONNECT WALLET BUTTON */}
             <div className="mb-4">
               <button
                 onClick={handleConnectWallet}
                 className="w-full flex items-center justify-center px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-200"
               >
                 {formData.metamaskConnect
-                  ? `Connected: ${formData.metamaskConnect.substring(0,6)}
+                  ? `Connected: ${formData.metamaskConnect.substring(0, 6)}
                   ...${formData.metamaskConnect.slice(-4)}`
                   : "Connect To MetaMask"}
               </button>
@@ -240,11 +264,10 @@ const SignUpPage = () => {
               ) : (
                 <>
                   <UserPlus className="mr-2 h-5 w-5" aria-hidden="true" />
-                  SignUp
+                  Verify and SignUp
                 </>
               )}
             </button>
-            
           </form>
 
           <p className="mt-8 text-center text-sm text-gray-400">

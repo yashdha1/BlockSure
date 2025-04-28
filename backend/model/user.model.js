@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
+// const documentSchema = new mongoose.Schema({
+//   documentType: { type: String, required: true }, // e.g., 'Aadhar'
+//   extractedData: { type: mongoose.Schema.Types.Mixed, required: true }, // OCR output 
+// });
+
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -25,12 +30,22 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true
     },
-    documents: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-
+    documents: [
+      {
+        DocName: {
+          type: String,
+          required: true,
+        },
+        DocDOB: {
+          type: String,
+          required: true,
+        }, 
+        DocAadhar: {
+          type: String,
+          required: true,
+        },
+      }
+    ],
     // store the policy type and the units bought:-> 
     policies: [
       {

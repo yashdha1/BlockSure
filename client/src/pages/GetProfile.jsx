@@ -11,6 +11,10 @@ const GetProfile = () => {
   const { user, userProfile } = useUserStore();
   const { policies, loading } = usePolicyStore();
   const [claimStatus, setClaimStatus] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPolicy, setSelectedPolicy] = useState(null);
+  const [password, setPassword] = useState("");
+
   const email = user?.email;
   if (email === undefined) return null;
 
@@ -34,6 +38,7 @@ const GetProfile = () => {
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
+
   const handleClaim = (
     policyId,
     units,
@@ -71,6 +76,11 @@ const GetProfile = () => {
       toast.error(error.response.data.error || "Failed to claim policy");
     }
   };
+  const initiateClaim = (policy) => {
+    setSelectedPolicy(policy);
+    setIsModalOpen(true);
+  };
+
   const profile = user || dummyUser;
 
   return (
@@ -84,7 +94,6 @@ const GetProfile = () => {
         >
           User Profile
         </motion.h1>
-
         {/* User Details Card */}
         <div className="bg-gray-800 p-8 rounded-lg shadow-lg mb-12">
           <h2 className="text-2xl font-bold mb-4">{profile.username}</h2>
@@ -106,8 +115,74 @@ const GetProfile = () => {
             <span className="font-semibold">Account Created:</span>{" "}
             {new Date(profile.createdAt).toLocaleDateString()}
           </p>
-        </div>
+          <p className="mb-2">
+            <span className="font-semibold">DOB : </span>{" "}
+            {profile.documents &&
+            profile.documents.length > 0 &&
+            profile.documents[0].DocDOB
+              ? profile.documents[0].DocDOB
+              : "N/A"}
+          </p>
 
+          <p className="mb-2">
+            <span className="text-2xl font-bold mb-8 text-emerald-400 text-center">
+              Claim policies By the secreat code in the Provided Document
+            </span>{" "}
+          </p>
+        </div>
+        {/* <div className="flex justify-between items-center mb-4"> 
+           Claim policy using your aadhar Number: 
+        <div/> */}
+        {/* If claim button is clicked then enter the password to claim the policy: */}
+
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-96">
+              <h2 className="text-xl font-bold mb-4 text-emerald-400">
+                Enter Secret Password {profile.email} 
+              </h2>
+              <input
+                type="password"
+                placeholder="Secret Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-2 mb-4 rounded bg-gray-700 text-white"
+              />
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setPassword("");
+                  }}
+                  className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    console.log(password + " : " + profile.documents[0].DocAadhar);
+                    if (password === profile.documents[0].DocAadhar) {
+                      handleClaim(
+                        selectedPolicy.policyId,
+                        selectedPolicy.units,
+                        selectedPolicy.returnRatio,
+                        profile.metamaskConnect,
+                        selectedPolicy.investment
+                      );
+                      setIsModalOpen(false);
+                      setPassword("");
+                    } else {
+                      toast.error("Incorrect Secrect Key!");
+                    }
+                  }}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded text-white font-bold"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Policies Section */}
         <motion.div
           className="bg-gray-800 p-8 rounded-lg shadow-lg"
@@ -158,6 +233,7 @@ const GetProfile = () => {
                             profile.metamaskConnect,
                             p.investment
                           );
+                          initiateClaim(p); // Call the claim function here
                         }}
                         className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded transition duration-300"
                       >

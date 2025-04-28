@@ -67,14 +67,14 @@ const PoliciesList = () => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-300">{p.category}</div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              {/* <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <button
                   onClick={() => deletePolicy(p._id)}
                   className="text-red-400 hover:text-red-300"
                 >
                   <Trash className="h-5 w-5" />
                 </button>
-              </td>
+              </td> */}
             </tr>
           ))}
         </tbody>

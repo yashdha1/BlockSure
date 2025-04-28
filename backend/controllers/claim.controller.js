@@ -32,7 +32,7 @@ export const createClaim = async (req, res) => {
       });
     }
     
-    console.log("find the deatils... METAMASK WALLET ADDRESS : ", userAddress);
+    console.log("find the details... METAMASK WALLET ADDRESS : ", userAddress);
     const user = await User.findOne({ metamaskConnect: userAddress.trim() });
     if (!user) {
       return res
@@ -89,6 +89,7 @@ export const getAllUserClaims = async (req, res) => {
   try {
     const claims = await Claim.find({});
     // return all the current claims:
+    console.log("Claims found :-", claims);
     return res.status(200).json({ claims });
   } catch (error) {
     console.log("Error in getAllClaims CONTROLLER...");

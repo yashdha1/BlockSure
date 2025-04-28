@@ -14,6 +14,7 @@ export const useUserStore = create((set, get) => ({
 
     signup : async ({username, email , password, confirmPassword, metamaskConnect , documents }) => {
         set({loading: true}); // start thy loading.... 
+        console.log(password, " -- Passwords -- ",confirmPassword)
         if(password !== confirmPassword){
             set({loading: false}); // stop the Loading and return the error:  
             return toast.error("Passwords do not match");

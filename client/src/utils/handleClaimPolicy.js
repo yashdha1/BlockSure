@@ -9,9 +9,10 @@ export const claimPolicy = async (policyId, units, totalReturn, userAddress) => 
       return; 
     }
     if(!policyId || !units || !totalReturn || !userAddress) {
-        console.log("ALL FIELDS ARE NOT RECIEVED IN THE FUNCTION CALL OF CLAOMS policy. ")
+        console.log("ALL FIELDS ARE NOT RECIEVED IN THE FUNCTION CALL OF CLAIMS policy.")
         return ;
-    }    
+    }
+
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const connectedAddress = await signer.getAddress();
@@ -46,7 +47,7 @@ export const claimPolicy = async (policyId, units, totalReturn, userAddress) => 
       const tx = await signer.sendTransaction({
         to: userAddress , // Define in .env
         value: totalReturn 
-      }); 
+      });
       await tx.wait();
     console.log("res to backed!")
     if (response.status === 200) {
@@ -54,4 +55,4 @@ export const claimPolicy = async (policyId, units, totalReturn, userAddress) => 
     } else {
         return { success: false, message: "Failed to send claim request." };
     }
-}; 
+};

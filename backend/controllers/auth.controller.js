@@ -48,17 +48,6 @@ export const signup = async (req, res) => {
     await storeTokens(newUser._id, refreshToken);
     setCookies(res, accessToken, refreshToken);
 
-    // await newUser.save() ; // temporarity save them ans then authenticate them : 
-    // Send OTP via email
-    // const mailOptions = {
-    //   from: '"Yash Dhadod Admin :" <process.env.EMAIL_ADMIN>', // SEND FROM THE ADMINS EMAILID : 
-    //   to: email,
-    //   subject: "Your OTP for Signup Verification",
-    //   text: `Your OTP is: ${otp}. It is valid for 5 minutes. do not share with anyone! `,
-    // };
-    // console.log(newUser); 
-    // await transporter.sendMail(mailOptions); // send the mail :->
-
     return res.status(201).json({
       user: newUser,
       message: " User created successfully ",
